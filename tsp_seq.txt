@@ -1,0 +1,10 @@
+Sequential TSP starting, n: 15, seed 12761
+Best tour cost: 2533. 
+path: 1 2 11 13 12 3 9 10 7 5 14 15 8 4 6 
+Number of operations: 72008
+Run time: 26 seconds
+Sequential TSP starting, n: 15, seed 12761
+Best tour cost: 2533. 
+path: 1 2 11 13 12 3 9 10 7 5 14 15 8 4 6 
+Number of operations: 72008
+Run time: 25 seconds
