@@ -2,6 +2,7 @@
 
                             Stephen C. Maldony
                   email: smaldony@astro.cis.temple.edu
+				tuc48831@temple.edu
 
                               Summer II, 1994
 
