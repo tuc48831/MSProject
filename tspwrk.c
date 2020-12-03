@@ -189,6 +189,15 @@ int main(int argc, char **argv)
 
        if (status == 0) /* no more nodes exist */ {
 		   printf("tspwrk teminateding ...\n");
+	//exit after putting info 
+             sprintf(tpname,"best_tour");
+             status = tsput(tpname,best_tour,(MAX_NODES+1)*sizeof(char));  
+
+             sprintf(tpname,"eff_calcs");
+             status = tsput(tpname,&eff_calcs,sizeof(double));  
+
+             sprintf(tpname,"g_min");
+             status = tsput(tpname,&local_minimum,sizeof(long)); 
 		   exit (0);
           //cnf_term();
 	   }
