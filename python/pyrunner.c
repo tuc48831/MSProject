@@ -3,11 +3,13 @@
 
 int main()
 {
-	PyObject* pInt;
+	char filename[] = "python_print.py";
 
 	Py_Initialize();
 
-	PyRun_SimpleString("print('Hello World from Embedded Python!!!')");
+	FILE* fp = fopen(filename, "r");
+
+	PyRun_SimpleFile(fp, "python_print.py");
 
 	Py_Finalize();
 
