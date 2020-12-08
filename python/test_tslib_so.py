@@ -2,8 +2,10 @@ import ctypes
 
 # load c dll from shared object
 libso = ctypes.CDLL("./tslib.so")
-#prepare c functions with corresponding argtypes
-libso.ts_init.argtypes = [ctypes.c_int, ctypes.c_char_p]
+# prepare c functions with corresponding argtypes
+# the ts_init line is commented out because while the ts_init function has argc/argv as args,
+# ts_init doesnt actually use them for anything, and ctypes throws an error if you call it without corresponding args
+# libso.ts_init.argtypes = [ctypes.c_int, ctypes.c_char_p]
 libso.tsput.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 libso.tsread.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 libso.tsget.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
