@@ -44,7 +44,7 @@ def tsget(tuple_name, string_buffer_size):
 
 
 if __name__ == "__main__":
-    print("File one executed when ran directly")
+    initialize()
 
     tp_name = "testTuple"
     tp_value = "This is the tuple value"
