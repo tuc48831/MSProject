@@ -1,20 +1,59 @@
 import ctypes
 
+# load c dll from shared object
 libso = ctypes.CDLL("./tslib.so")
-
+#prepare c functions with corresponding argtypes
+libso.ts_init.argtypes = [ctypes.c_int, ctypes.c_char_p]
 libso.tsput.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
+libso.tsread.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 libso.tsget.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 
-init_size = 256
-pbuf = ctypes.create_string_buffer(init_size)
 
-return_value = libso.ts_init()
+def initialize():
+    # no return value to parse as if ts_init fails it calls exit(0)
+    libso.ts_init()
 
-tp_name = "testTuple"
-tp_value = "This is the tuple value"
-tp_size = 100
-return_value = libso.tsput(tp_name, tp_value, tp_size)
 
-return_value = libso.tsget(tp_name, pbuf, tp_size)
+def tsput(tuple_name, tuple_value, tuple_size):
+    return_value = libso.tsput(tuple_name, tuple_value, tuple_size)
+    # return value checking goes here, tsput either returns the tuple size or a negative number so this error checking is 'safe'
+    if return_value != tuple_size:
+        return 1
+    else:
+        return 0
 
-print(pbuf.value)
+
+def tsread(tuple_name, string_buffer_size):
+    string_buffer = ctypes.create_string_buffer(string_buffer_size)
+    return_value = libso.tsput(tuple_name, string_buffer, string_buffer_size)
+    # return value checking goes here
+    if return_value >= string_buffer_size:
+        return 1
+    else:
+        return string_buffer.value
+
+
+def tsget(tuple_name, string_buffer_size):
+    string_buffer = ctypes.create_string_buffer(string_buffer_size)
+    return_value = libso.tsput(tuple_name, string_buffer, string_buffer_size)
+    # return value checking goes here
+    if return_value >= string_buffer_size:
+        return 1
+    else:
+        return string_buffer.value
+
+
+if __name__ == "__main__":
+    print("File one executed when ran directly")
+
+    tp_name = "testTuple"
+    tp_value = "This is the tuple value"
+    tp_size = 100
+
+    tsput(tp_name, tp_value, tp_size)
+
+    tuple_string = tsread(tp_name, tp_size)
+    print(tuple_string)
+
+    tuple_string_2 = tsget(tp_name, tp_size)
+    print(tuple_string)
