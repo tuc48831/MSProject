@@ -2,6 +2,8 @@ import ctypes
 
 # load c dll from shared object
 libso = ctypes.CDLL("./tslib.so")
+libso.ts_init()
+
 # prepare c functions with corresponding argtypes
 # the ts_init line is commented out because while the ts_init function has argc/argv as args,
 # ts_init doesnt actually use them for anything, and ctypes throws an error if you call it without corresponding args
@@ -11,14 +13,11 @@ libso.tsread.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 libso.tsget.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 
 
-def initialize():
-    # no return value to parse as if ts_init fails it calls exit(0)
-    libso.ts_init()
-
-
 def tsput(tuple_name, tuple_value, tuple_size):
+    if tuple_size <= 0:
+        return 1
     return_value = libso.tsput(tuple_name, tuple_value, tuple_size)
-    # return value checking goes here, tsput either returns the tuple size or a negative number so this error checking is 'safe'
+    # return value checking, tsput either returns the tuple size or a negative number so this error checking is 'safe'
     if return_value != tuple_size:
         return 1
     else:
@@ -44,18 +43,3 @@ def tsget(tuple_name, string_buffer_size):
     else:
         return string_buffer.value
 
-
-if __name__ == "__main__":
-    initialize()
-
-    tp_name = "testTuple"
-    tp_value = "This is the tuple value"
-    tp_size = 100
-
-    tsput(tp_name, tp_value, tp_size)
-
-    tuple_string = tsread(tp_name, tp_size)
-    print(tuple_string)
-
-    tuple_string_2 = tsget(tp_name, tp_size)
-    print(tuple_string)
