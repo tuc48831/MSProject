@@ -29,7 +29,7 @@ def tsread(tuple_name, string_buffer_size):
     string_buffer = ctypes.create_string_buffer(string_buffer_size)
     return_value = libso.tsread(tuple_name, string_buffer, string_buffer_size)
     # return value checking goes here
-    if return_value >= string_buffer_size:
+    if return_value > string_buffer_size:
         return 1
     else:
         return string_buffer.value
@@ -39,7 +39,7 @@ def tsget(tuple_name, string_buffer_size):
     string_buffer = ctypes.create_string_buffer(string_buffer_size)
     return_value = libso.tsget(tuple_name, string_buffer, string_buffer_size)
     # return value checking goes here
-    if return_value >= string_buffer_size:
+    if return_value > string_buffer_size:
         return 1
     else:
         return string_buffer.value
