@@ -2,7 +2,6 @@
 // Created by Peter on 12/7/2020.
 //
 
-=======================================================================
 /***************** tslib functions *******************/
 #include "synergy.h"
 
@@ -25,8 +24,7 @@ struct {
     int sd; /* socket for reading the retport */
 } sng_map_hd;
 
-int uvrCores() { // This function calculates the total number of cores
-    deployed at runtime based on .hosts
+int uvrCores() { // This function calculates the total number of cores deployed at runtime based on .hosts
     FILE *fd;
     char nodeIP[128];
     int cores;
@@ -87,8 +85,7 @@ int ts_init(int argc, char *argv[])
     sng_map_hd.retport = bind_socket(sng_map_hd.sd, 0); // get return port
     if (getenv("TSHPORT") == NULL) sng_map_hd.port = 5000;
     else sng_map_hd.port = atoi(getenv("TSHPORT"));
-    printf("init done. host (%d) port (%d) return
-    port(%d)\n",sng_map_hd.host,sng_map_hd.port,sng_map_hd.retport);
+    printf("init done. host (%d) port (%d) return port(%d)\n",sng_map_hd.host,sng_map_hd.port,sng_map_hd.retport);
     return (0);
 }
 
@@ -187,8 +184,7 @@ int tsput( tpname, tpvalue, tpsize )
     tsh_get_ot2 in2 ;
     while (uvrReturn.status != FAILURE) { // Read Match or Get Match
 // Send tuple directly to matching clients
-//printf("uvrReturn Tuple receiver:(%d|%d)\n", uvrReturn.port,
-        uvrReturn.host);
+//printf("uvrReturn Tuple receiver:(%d|%d)\n", uvrReturn.port, uvrReturn.host);
         tshSock2 = connectNode(ntohs(uvrReturn.port), uvrReturn.host);
 // Send tuple header
         strcpy(in2.appid,out.appid);
@@ -202,16 +198,14 @@ int tsput( tpname, tpvalue, tpsize )
             return(TSPUT_ER);
         }
 /* send tuple to TSH */
-//printf("Sending (%s) to requester (%d|%d)\n", out.name,
-        uvrReturn.port, uvrReturn.host);
+//printf("Sending (%s) to requester (%d|%d)\n", out.name, uvrReturn.port, uvrReturn.host);
         if (!writen(tshSock2, tpvalue, tpsize))
         {
             perror("\nOpPut::direct send to client content failure\n") ;
             close(tshSock2);
             return(TSPUT_ER) ;
         }
-        if (uvrReturn.request == TSH_OP_GET) { // Get Match. No need to save
-            tuple. Exit loop
+        if (uvrReturn.request == TSH_OP_GET) { // Get Match. No need to save tuple. Exit loop
             printf("\nTuple (%s) consumed.\n", out.name);
             close(tshSock2);
             return(TSPUT_ER);
