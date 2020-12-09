@@ -7,10 +7,9 @@ import tslib_so_interface as tslib
 buffer_return_value = "test buffer return value"
 
 
-def string_buff_side_effect(tuple_name, string_buffer, string_buffer_size):
-    new_buff = ctypes.create_string_buffer(string_buffer_size)
-    new_buff.value = buffer_return_value
-    string_buffer = new_buff
+def string_buff_side_effect(self, tuple_name, string_buffer, string_buffer_size):
+    string_buffer = ctypes.create_string_buffer(b"test buffer return value", 100)
+    return 100
 
 
 class MyTestCase(unittest.TestCase):
@@ -20,7 +19,7 @@ class MyTestCase(unittest.TestCase):
         tp_value = "This is the tuple value"
         tp_size = 100
         tslib.libso.tsput = MagicMock()
-        MagicMock.return_value = 0
+        MagicMock.return_value = 100
         return_value = tslib.tsput(tp_name, tp_value, tp_size)
         self.assertEqual(return_value, 0)
         tslib.libso.tsput.assert_called_with(tp_name, tp_value, tp_size)
