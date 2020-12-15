@@ -1,3 +1,4 @@
 pyrunner
 ./venv
 .__pycache__/
+*.pyc
