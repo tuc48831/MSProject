@@ -17,9 +17,6 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.libso = ctypes.CDLL("./tslib.so")
-        self.libso.tsput.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
-        self.libso.tsread.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
-        self.libso.tsget.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 
     def test_tsput_success(self):
         tp_name = "testTuple"
