@@ -8,7 +8,8 @@ buffer_return_value = "test buffer return value"
 
 
 def string_buff_side_effect(self, tuple_name, string_buffer, string_buffer_size):
-    string_buffer = ctypes.create_string_buffer(b"test buffer return value", 100)
+    string_buffer = ctypes.create_string_buffer(100)
+    string_buffer.value = "test value"
     return 100
 
 
