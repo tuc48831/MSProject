@@ -26,20 +26,24 @@ def tsput(tuple_name, tuple_value, tuple_size):
 
 def tsread(tuple_name, string_buffer_size):
     string_buffer = ctypes.create_string_buffer(string_buffer_size)
-    return_value = libso.tsread(tuple_name, string_buffer, string_buffer_size)
-    # return value checking goes here
+    # unsure of possible maximum tuple length/return value
+    tuple_name_as_buffer = ctypes.create_string_buffer(str(tuple_name), 2*len(tuple_name))
+    return_value = libso.tsread(tuple_name_as_buffer, string_buffer, string_buffer_size)
+    # return value is the tuple size, so if it is larger than the buffer we pass in there is a problem
     if return_value > string_buffer_size:
         return 1
     else:
-        return string_buffer.value
+        return string_buffer.value, tuple_name_as_buffer.value
 
 
 def tsget(tuple_name, string_buffer_size):
     string_buffer = ctypes.create_string_buffer(string_buffer_size)
-    return_value = libso.tsget(tuple_name, string_buffer, string_buffer_size)
-    # return value checking goes here
+    # unsure of possible maximum tuple length/return value
+    tuple_name_as_buffer = ctypes.create_string_buffer(str(tuple_name), 2*len(tuple_name))
+    return_value = libso.tsget(tuple_name_as_buffer, string_buffer, string_buffer_size)
+    # return value is the tuple size, so if it is larger than the buffer we pass in there is a problem
     if return_value > string_buffer_size:
         return 1
     else:
-        return string_buffer.value
+        return string_buffer.value, tuple_name_as_buffer.value
 
