@@ -9,7 +9,7 @@ buffer_return_value = "test buffer return value"
 
 def string_buff_side_effect(self, tuple_name, string_buffer, string_buffer_size):
     string_buffer = ctypes.create_string_buffer(100)
-    string_buffer.value = "test value"
+    string_buffer.value = buffer_return_value.encode('utf-8')
     return 100
 
 

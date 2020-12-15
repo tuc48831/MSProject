@@ -1,2 +1,3 @@
 pyrunner
 ./venv
+.__pycache__/
