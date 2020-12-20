@@ -1,5 +1,6 @@
-import tslib_so_interface as tslib
+import tslib
 import argparse
+import numpy
 
 # arg parser that has api-key, mutually exclusive indicator to load either cost matrix/coords
 def parse_args(arguments):

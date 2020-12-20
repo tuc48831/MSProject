@@ -14,7 +14,7 @@ libso.tsget.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 
 
 def tsput(tuple_name, tuple_value, tuple_size):
-    if tuple_size <= 0:
+    if tuple_size <= 0 or tuple_size < len(tuple_value):
         return 1
     tuple_name_as_buffer = ctypes.create_string_buffer(len(tuple_name))
     tuple_name_as_buffer.value = tuple_name.encode('utf-8')
