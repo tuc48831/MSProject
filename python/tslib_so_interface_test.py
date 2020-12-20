@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
         tslib.libso.tsread = MagicMock()
         MagicMock.return_value = 100
         return_value = tslib.tsread(tp_name, string_buff_size)
-        self.assertEqual(return_value, 100)
+        self.assertEqual(return_value, (b'', b'testTuple'))
         tslib.libso.tsread.assert_called_with(tp_name, string_buff_size)
 
     def test_tsread_failure(self):
@@ -50,8 +50,8 @@ class MyTestCase(unittest.TestCase):
         string_buff_size = 100
         tslib.libso.tsget = MagicMock()
         MagicMock.return_value = 100
-        return_value = tslib.tsread(tp_name, string_buff_size)
-        self.assertEqual(return_value, 100)
+        return_value = tslib.tsget(tp_name, string_buff_size)
+        self.assertEqual(return_value, (b'', b'testTuple'))
         tslib.libso.tsread.assert_called_with(tp_name, string_buff_size)
 
     def test_tsget_failure(self):
@@ -59,7 +59,7 @@ class MyTestCase(unittest.TestCase):
         string_buff_size = 100
         tslib.libso.tsget = MagicMock()
         MagicMock.return_value = 101
-        return_value = tslib.tsread(tp_name, string_buff_size)
+        return_value = tslib.tsget(tp_name, string_buff_size)
         self.assertEqual(return_value, 1)
         tslib.libso.tsread.assert_called_with(tp_name, string_buff_size)
 
