@@ -35,22 +35,14 @@ class MyTestCase(unittest.TestCase):
         MagicMock.return_value = 100
         return_value = tslib.tsread(tp_name, string_buff_size)
         self.assertEqual(return_value, (b'', b'testTuple'))
-        tp_name_called_with = ctypes.create_string_buffer(2*len(tp_name))
-        tp_name_called_with.value = tp_name.encode('utf-8')
-        string_buffer_called_with = ctypes.create_string_buffer(string_buff_size)
-        tslib.libso.tsread.assert_called_with(tp_name_called_with, string_buffer_called_with, string_buff_size)
 
     def test_tsread_failure(self):
         tp_name = "testTuple"
         string_buff_size = 100
         tslib.libso.tsread = MagicMock()
-        MagicMock.return_value = 101
+        MagicMock.return_value = -108
         return_value = tslib.tsread(tp_name, string_buff_size)
         self.assertEqual(return_value, 1)
-        tp_name_called_with = ctypes.create_string_buffer(2*len(tp_name))
-        tp_name_called_with.value = tp_name.encode('utf-8')
-        string_buffer_called_with = ctypes.create_string_buffer(string_buff_size)
-        tslib.libso.tsread.assert_called_with(tp_name_called_with, string_buffer_called_with, string_buff_size)
 
     def test_tsget_success(self):
         tp_name = "testTuple"
@@ -59,22 +51,14 @@ class MyTestCase(unittest.TestCase):
         MagicMock.return_value = 100
         return_value = tslib.tsget(tp_name, string_buff_size)
         self.assertEqual(return_value, (b'', b'testTuple'))
-        tp_name_called_with = ctypes.create_string_buffer(2*len(tp_name))
-        tp_name_called_with.value = tp_name.encode('utf-8')
-        string_buffer_called_with = ctypes.create_string_buffer(string_buff_size)
-        tslib.libso.tsget.assert_called_with(tp_name_called_with, string_buffer_called_with, string_buff_size)
 
     def test_tsget_failure(self):
         tp_name = "testTuple"
         string_buff_size = 100
         tslib.libso.tsget = MagicMock()
-        MagicMock.return_value = 101
+        MagicMock.return_value = -107
         return_value = tslib.tsget(tp_name, string_buff_size)
         self.assertEqual(return_value, 1)
-        tp_name_called_with = ctypes.create_string_buffer(2*len(tp_name))
-        tp_name_called_with.value = tp_name.encode('utf-8')
-        string_buffer_called_with = ctypes.create_string_buffer(string_buff_size)
-        tslib.libso.tsget.assert_called_with(tp_name_called_with, string_buffer_called_with, string_buff_size)
 
 
 if __name__ == '__main__':
