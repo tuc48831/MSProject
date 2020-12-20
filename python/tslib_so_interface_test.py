@@ -1,7 +1,8 @@
 import unittest
+import ctypes
 from unittest.mock import MagicMock
 
-import tslib
+import tslib_so_interface as tslib
 
 
 class MyTestCase(unittest.TestCase):

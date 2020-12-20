@@ -14,7 +14,7 @@ libso.tsget.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 
 
 def tsput(tuple_name, tuple_value, tuple_size):
-    if tuple_size <= 0 or tuple_size < len(tuple_value):
+    if tuple_size <= 0:
         return 1
     tuple_name_as_buffer = ctypes.create_string_buffer(len(tuple_name))
     tuple_name_as_buffer.value = tuple_name.encode('utf-8')
@@ -22,7 +22,7 @@ def tsput(tuple_name, tuple_value, tuple_size):
     tuple_value_as_buffer.value = tuple_value.encode('utf-8')
     return_value = libso.tsput(tuple_name_as_buffer, tuple_value_as_buffer, tuple_size)
     # return value checking, tsput either returns (int)ntohs(in.error) which i think is always 400 when success or a negative number so this error checking is 'safe'
-    # OR ts put error is defined as -106 in tslib_python.c, usually because tsh is not running
+    # OR ts put error is defined as -106 in tslib.c, usually because tsh is not running
     if return_value != 400 or return_value == -106:
         return 1
     else:
@@ -36,7 +36,7 @@ def tsread(tuple_name, string_buffer_size):
     tuple_name_as_buffer.value = tuple_name.encode('utf-8')
     return_value = libso.tsread(tuple_name_as_buffer, string_buffer, string_buffer_size)
     # return value is the tuple size, so if it is larger than the buffer we pass in there is a problem
-    # OR ts read error is defined as -108 in tslib_python.c, usually because tsh is not running
+    # OR ts read error is defined as -108 in tslib.c, usually because tsh is not running
     if return_value > string_buffer_size or return_value == -108:
         return 1
     else:
@@ -50,7 +50,7 @@ def tsget(tuple_name, string_buffer_size):
     tuple_name_as_buffer.value = tuple_name.encode('utf-8')
     return_value = libso.tsget(tuple_name_as_buffer, string_buffer, string_buffer_size)
     # return value is the tuple size, so if it is larger than the buffer we pass in there is a problem
-    # OR ts get error is defined as -107 in tslib_python.c, usually because tsh is not running
+    # OR ts get error is defined as -107 in tslib.c, usually because tsh is not running
     if return_value > string_buffer_size or return_value == -107:
         return 1
     else:
