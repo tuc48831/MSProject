@@ -16,7 +16,11 @@ libso.tsget.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
 def tsput(tuple_name, tuple_value, tuple_size):
     if tuple_size <= 0:
         return 1
-    return_value = libso.tsput(tuple_name, tuple_value, tuple_size)
+    tuple_name_as_buffer = ctypes.create_string_buffer(len(tuple_name))
+    tuple_name_as_buffer.value = tuple_name.encode('utf-8')
+    tuple_name_as_buffer = ctypes.create_string_buffer(len(tuple_value))
+    tuple_name_as_buffer.value = tuple_value.encode('utf-8')
+    return_value = libso.tsput(tuple_name_as_buffer, tuple_value, tuple_size)
     # return value checking, tsput either returns the tuple size or a negative number so this error checking is 'safe'
     # OR ts put error is defined as -106 in tslib.c, usually because tsh is not running
     if return_value != tuple_size or return_value == -106:

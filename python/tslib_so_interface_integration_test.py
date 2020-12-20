@@ -24,7 +24,7 @@ def main():
 
     string_from_tuple_space, matched_tuple_name = tslib.tsread("da", tuple_size)
     if matched_tuple_name != tuple_name:
-        print("ERROR, tsput regex matching from 'da' to 'date' failed, integration test failed")
+        print("ERROR, tsread regex matching from 'da' to 'date' failed, integration test failed")
         sys.exit(1)
     else:
         print("matched tuple name : " + matched_tuple_name)
@@ -34,7 +34,7 @@ def main():
 
     string_from_tuple_space, matched_tuple_name = tslib.tsget("date", tuple_size)
     if matched_tuple_name != tuple_name:
-        print("ERROR, tsput regex matching from 'da' to 'date' failed, integration test failed")
+        print("ERROR, tsget regex matching from 'da' to 'date' failed, integration test failed")
         sys.exit(1)
     else:
         print("matched tuple name : " + matched_tuple_name)
