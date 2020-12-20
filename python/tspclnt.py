@@ -51,12 +51,12 @@ if __name__ == '__main__':
         # load file into a matrix
         matrix = numpy.loadtxt(cost_matrix_file_location, delimiter=",")
         # call tsput on matrix
-        matrix_as_string = numpy.array_repr(matrix)
+        matrix_as_string = numpy.char.encode(matrix)
         print('putting matrix into tuple space: ' + matrix_as_string)
         tslib.tsput("tsp_matrix", matrix_as_string, len(matrix_as_string))
 
         retrieved_matrix, retrived_tuple_name = tslib.tsread("tsp_matrix", len(matrix_as_string))
-        matrix = numpy.matrix(retrieved_matrix.decode('utf-8'))
+        matrix = numpy.char.decode(retrieved_matrix)
         print('retrieved matrix is: ' + str(matrix))
         print('retrieved matrix squared is: ' + str(matrix * matrix))
 
