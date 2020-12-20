@@ -46,6 +46,7 @@ def main():
             print("ERROR, value retrived from tuple space does not match: " + string_from_tuple_space.decode('utf-8') + " | " + str(now) + " integration test failed")
             sys.exit(1)
         print("value retrieved from tuple space : " + string_from_tuple_space.decode('utf-8'))
+    print("INTEGRATION TEST PASSED, TUPLE PUT INTO SPACE AND RETRIVED ON BOTH PARTIAL AND FULL TUPLE MATCH WITH CORRECT VALUES")
     sys.exit(0)
 
 
