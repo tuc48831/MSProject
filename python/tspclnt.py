@@ -53,7 +53,7 @@ if __name__ == '__main__':
         # call tsput on matrix
         matrix_as_string = numpy.array_repr(matrix)
         print('putting matrix into tuple space: ' + matrix_as_string)
-        tslib.tsput("tsp_matrix", matrix.tobytes(), sys.getsizeof(matrix.tobytes()))
+        tslib.tsput_bytes("tsp_matrix", matrix.tobytes(), sys.getsizeof(matrix.tobytes()))
 
         retrieved_matrix, retrieved_tuple_name = tslib.tsread("tsp_matrix", len(matrix_as_string))
         matrix = numpy.frombuffer(retrieved_matrix)
