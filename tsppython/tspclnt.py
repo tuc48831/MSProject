@@ -4,7 +4,7 @@ import numpy
 
 import googlemaps
 
-import tslib
+from tslib_python import tslib
 
 API_KEY = None
 

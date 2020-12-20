@@ -1,6 +1,6 @@
 import sys
 
-import tslib as tslib
+import tslib
 
 import datetime
 
