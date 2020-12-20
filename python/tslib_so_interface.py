@@ -21,9 +21,9 @@ def tsput(tuple_name, tuple_value, tuple_size):
     tuple_value_as_buffer = ctypes.create_string_buffer(len(tuple_value))
     tuple_value_as_buffer.value = tuple_value.encode('utf-8')
     return_value = libso.tsput(tuple_name_as_buffer, tuple_value_as_buffer, tuple_size)
-    # return value checking, tsput either returns the tuple size or a negative number so this error checking is 'safe'
+    # return value checking, tsput either returns (int)ntohs(in.error) which i think is always 400 when success or a negative number so this error checking is 'safe'
     # OR ts put error is defined as -106 in tslib.c, usually because tsh is not running
-    if return_value != tuple_size or return_value == -106:
+    if return_value != 400 or return_value == -106:
         return 1
     else:
         return 0
