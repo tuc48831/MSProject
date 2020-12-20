@@ -1,6 +1,6 @@
 import sys
 
-import tslib_so_interface as tslib
+import tslib
 
 import datetime
 
