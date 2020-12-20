@@ -15,7 +15,7 @@ def main():
     tuple_size = 200
     tuple_name = "date"
 
-    return_value = tslib.tsput(tuple_name, str(datetime.datetime.now()), tuple_size)
+    return_value = tslib.tsput(tuple_name, str(now), tuple_size)
     if return_value == 1:
         print("ERROR, tsput returned 1, failure detected, integration test failed")
         sys.exit(1)
@@ -29,6 +29,9 @@ def main():
         sys.exit(1)
     else:
         print("matched tuple name : " + matched_tuple_name.decode('utf-8'))
+        if string_from_tuple_space.decode('utf-8') != str(now):
+            print("ERROR, value retrived from tuple space does not match: " + string_from_tuple_space.decode('utf-8') + " | " + str(now) + " integration test failed")
+            sys.exit(1)
         print("value retrieved from tuple space : " + string_from_tuple_space.decode('utf-8'))
 
     string_from_tuple_space = None
@@ -39,6 +42,9 @@ def main():
         sys.exit(1)
     else:
         print("matched tuple name : " + matched_tuple_name.decode('utf-8'))
+        if string_from_tuple_space.decode('utf-8') != str(now):
+            print("ERROR, value retrived from tuple space does not match: " + string_from_tuple_space.decode('utf-8') + " | " + str(now) + " integration test failed")
+            sys.exit(1)
         print("value retrieved from tuple space : " + string_from_tuple_space.decode('utf-8'))
     sys.exit(0)
 
