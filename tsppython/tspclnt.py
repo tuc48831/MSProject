@@ -2,9 +2,7 @@ import sys
 import argparse
 import numpy
 
-import googlemaps
-
-from tslib_python import tslib
+import tslib
 
 API_KEY = None
 

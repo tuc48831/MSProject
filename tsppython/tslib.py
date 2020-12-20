@@ -1,7 +1,7 @@
 import ctypes
 
 # load c dll from shared object
-libso = ctypes.CDLL("./tslib_python/tslib_python.so")
+libso = ctypes.CDLL("./tslib.so")
 libso.ts_init()
 
 # prepare c functions with corresponding argtypes
