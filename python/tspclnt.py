@@ -10,7 +10,7 @@ API_KEY = None
 # arg parser that has api-key, mutually exclusive indicator to load either cost matrix/coords
 def parse_args(args):
     parser = argparse.ArgumentParser(prog='tspclnt')
-    parser.add_argument('-s', '--store_tuple_space', action='stored_tuple_name', help='store the cost matrix in the tuple space')
+    parser.add_argument('-s', '--store_tuple_space', dest='stored_tuple_name', help='store the cost matrix in the tuple space')
     parser.add_argument('-a', '--api_key', dest='api_key', help='The google maps API key for turning coords into a cost matrix, unncessary for --matrix')
 
     group = parser.add_mutually_exclusive_group(required=True)
