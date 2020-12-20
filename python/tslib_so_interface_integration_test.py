@@ -28,8 +28,8 @@ def main():
         print("ERROR, tsread regex matching from: " + partial_tuple + " | " + matched_tuple_name.decode('utf-8') + " failed, integration test failed")
         sys.exit(1)
     else:
-        print("matched tuple name : " + matched_tuple_name)
-        print("value retrieved from tuple space : " + string_from_tuple_space)
+        print("matched tuple name : " + matched_tuple_name.decode('utf-8'))
+        print("value retrieved from tuple space : " + string_from_tuple_space.decode('utf-8'))
 
     string_from_tuple_space = None
 
@@ -38,8 +38,8 @@ def main():
         print("ERROR, tsget regex matching from 'da' to 'date' failed, integration test failed")
         sys.exit(1)
     else:
-        print("matched tuple name : " + matched_tuple_name)
-        print("value retrieved from tuple space : " + string_from_tuple_space)
+        print("matched tuple name : " + matched_tuple_name.decode('utf-8'))
+        print("value retrieved from tuple space : " + string_from_tuple_space.decode('utf-8'))
     sys.exit(0)
 
 
