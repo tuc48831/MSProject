@@ -55,7 +55,7 @@ if __name__ == '__main__':
         print('putting matrix into tuple space: ' + matrix_as_string)
         tslib.tsput_bytes("tsp_matrix", matrix.tobytes(), sys.getsizeof(matrix.tobytes()))
 
-        retrieved_matrix, retrieved_tuple_name = tslib.tsread("tsp_matrix", len(matrix_as_string))
+        retrieved_matrix, retrieved_tuple_name = tslib.tsread("tsp_matrix", sys.getsizeof(matrix.tobytes()))
         matrix = numpy.frombuffer(retrieved_matrix)
         print('retrieved matrix is: ' + str(matrix))
         print('retrieved matrix squared is: ' + str(matrix * matrix))
