@@ -54,12 +54,12 @@ if __name__ == '__main__':
         # call tsput on matrix
         matrix_as_string = matrix.to_csv()
         print('putting matrix into tuple space: ' + matrix_as_string)
-        tslib.tsput_bytes("tsp_matrix", matrix.tobytes(), sys.getsizeof(matrix.tobytes()))
+        tslib.tsput("tsp_matrix", matrix_as_string, len(matrix_as_string))
 
-        retrieved_matrix, retrieved_tuple_name = tslib.tsread("tsp_matrix", sys.getsizeof(matrix.tobytes()))
-        matrix = numpy.frombuffer(retrieved_matrix)
-        print('retrieved matrix is: ' + str(matrix))
-        print('retrieved matrix squared is: ' + str(matrix * matrix))
+        retrieved_matrix, retrieved_tuple_name = tslib.tsread("tsp_matrix", len(matrix_as_string))
+        # matrix = pandas.read_csv(retrieved_matrix)
+        print('retrieved matrix is: ' + str(retrieved_matrix))
+        # print('retrieved matrix squared is: ' + str(matrix * matrix))
 
     # at this point we have created a raw numpy based cost matrix, and either have the file name or tuple name to pass to workers
         # theoretically the workers should just exist and be waiting for a file/tuple to show up to automatically start working
