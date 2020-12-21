@@ -52,12 +52,12 @@ if __name__ == '__main__':
         # load file into a matrix
         matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",")
         # call tsput on matrix
-        matrix_as_string = matrix.to_csv()
+        matrix_as_string = matrix.to_json()
         print('putting matrix into tuple space: ' + matrix_as_string)
         tslib.tsput("tsp_matrix", matrix_as_string, len(matrix_as_string))
 
         retrieved_matrix, retrieved_tuple_name = tslib.tsread("tsp_matrix", len(matrix_as_string))
-        # matrix = pandas.read_csv(retrieved_matrix)
+        matrix = pandas.read_json(retrieved_matrix)
         print('retrieved matrix is: ' + str(retrieved_matrix))
         # print('retrieved matrix squared is: ' + str(matrix * matrix))
 
