@@ -56,9 +56,8 @@ if __name__ == '__main__':
         tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
 
         retrieved_matrix = tsp.get_cost_matrix_from_tuple_space("tsp_matrix", 6)
-        matrix = pandas.read_json(retrieved_matrix)
-        print('retrieved matrix is: ' + str(matrix))
-        print('retrieved matrix squared is: ' + str(matrix.dot(matrix)))
+        print('retrieved matrix is: ' + str(retrieved_matrix))
+        print('retrieved matrix squared is: ' + str(retrieved_matrix.dot(retrieved_matrix)))
 
     # at this point we have created a raw numpy based cost matrix, and either have the file name or tuple name to pass to workers
         # theoretically the workers should just exist and be waiting for a file/tuple to show up to automatically start working
