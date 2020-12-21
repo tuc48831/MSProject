@@ -4,6 +4,7 @@ import numpy
 import pandas
 
 import tslib_so_interface as tslib
+import tsplib as tsp
 
 API_KEY = None
 
@@ -52,13 +53,11 @@ if __name__ == '__main__':
         # load file into a matrix
         matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",")
         # call tsput on matrix
-        matrix_as_string = matrix.to_json()
-        print('putting matrix into tuple space: ' + matrix_as_string)
-        tslib.tsput("tsp_matrix", matrix_as_string, len(matrix_as_string))
+        tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
 
-        retrieved_matrix, retrieved_tuple_name = tslib.tsread("tsp_matrix", len(matrix_as_string))
-        matrix = pandas.read_json(retrieved_matrix)
-        print('retrieved matrix is: ' + str(retrieved_matrix))
+        new_matrix = tsp.get_cost_matrix_from_tuple_space("tsp_matrix", 6)
+        matrix = pandas.read_json(new_matrix)
+        print('retrieved matrix is: ' + str(matrix))
         # print('retrieved matrix squared is: ' + str(matrix * matrix))
 
     # at this point we have created a raw numpy based cost matrix, and either have the file name or tuple name to pass to workers
