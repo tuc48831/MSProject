@@ -1,6 +1,7 @@
 import sys
 import argparse
 import numpy
+import pandas
 
 import tslib_so_interface as tslib
 
@@ -49,9 +50,9 @@ if __name__ == '__main__':
     # either have raw file cost matrix OR file that we just generated
     if arguments.stored_tuple_name:
         # load file into a matrix
-        matrix = numpy.loadtxt(cost_matrix_file_location, delimiter=",")
+        matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",")
         # call tsput on matrix
-        matrix_as_string = numpy.array_repr(matrix)
+        matrix_as_string = matrix.to_csv()
         print('putting matrix into tuple space: ' + matrix_as_string)
         tslib.tsput_bytes("tsp_matrix", matrix.tobytes(), sys.getsizeof(matrix.tobytes()))
 
