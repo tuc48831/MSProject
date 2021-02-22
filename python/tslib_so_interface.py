@@ -97,3 +97,6 @@ def tsget_bytes(tuple_name, string_buffer_size):
     else:
         return string_buffer.value, tuple_name_as_buffer.value
 
+
+def uvr_cores():
+    return libso.uvrCores()
