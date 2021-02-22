@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument('-a', '--api_key', dest='api_key', help='The google maps API key for turning coords into a cost matrix, unncessary for --matrix')
     # args with defaults
     parser.add_argument('-n', '--nodes', dest='num_nodes', default=20, help='The maximum number of nodes')
-    parser.add_argument('-c', '--constant', dest='load_balancing_constant', default=100, help='The load balancing constant')
+    parser.add_argument('-l', '--load_balance', dest='load_balancing_constant', default=100, help='The load balancing constant')
 
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-m', '--matrix', dest='matrix_file_location', help='an input file of a raw cost matrix, mutually exclusive with --coord')
