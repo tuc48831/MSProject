@@ -2,3 +2,4 @@ pyrunner
 ./venv
 .__pycache__/
 *.pyc
+tsp_out.txt

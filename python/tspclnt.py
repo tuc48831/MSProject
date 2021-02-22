@@ -74,7 +74,7 @@ if __name__ == '__main__':
         print('retrieved matrix is: ' + str(retrieved_matrix))
         print('retrieved matrix squared is: ' + str(retrieved_matrix.dot(retrieved_matrix)))
     #
-    (temp_tour, cur_tour, best_tour) = None
+    temp_tour, cur_tour, best_tour = None, None, None
     # start the problem
     start_time = datetime.datetime.now()
     global_minimum = float('inf')
