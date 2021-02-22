@@ -23,7 +23,7 @@ def parse_args():
     group.add_argument('-c', '--coord', dest='coord_file_location', help='an input file of raw gps coordinates to be turned into a cost matrix, mutually exclusive with --matrix')
 
     args = parser.parse_args()
-    if arguments.api_key and not arguments.coord_file_location:
+    if args.api_key and not args.coord_file_location:
         print("API key is required to run with coordinates file option")
         sys.exit(1)
     return args
