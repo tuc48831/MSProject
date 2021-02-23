@@ -132,7 +132,7 @@ def get_global_minimum():
 
 def put_best_tour(best_tour, num_vertices):
     # use matrix size * size of int, which should be enough
-    return_value = tslib.tsput(best_tour_name, best_tour, sys.getsizeof(int()) * num_vertices)
+    return_value = tslib.tsput(best_tour_name, str(best_tour), sys.getsizeof(int()) * num_vertices)
     if return_value == 1:
         return 1
     else:
@@ -141,14 +141,16 @@ def put_best_tour(best_tour, num_vertices):
 
 def read_best_tour(num_vertices):
     best_tour_size = sys.getsizeof(int()) * num_vertices
-    retrieved_best_tour, retrieved_tuple_name = tslib.tsread(start_tuple_name, best_tour_size)
-    return [int(i) for i in retrieved_best_tour]
+    retrieved_best_tour, retrieved_tuple_name = tslib.tsread(best_tour_name, best_tour_size)
+    # this slice and split is to convert "[1, 2, 3]" to a list of strings e.g. ["1", "2", "3"]
+    return [int(i) for i in retrieved_best_tour[1:-1].split(", ")]
 
 
 def get_best_tour(num_vertices):
     best_tour_size = sys.getsizeof(int()) * num_vertices
-    retrieved_best_tour, retrieved_tuple_name = tslib.tsget(start_tuple_name, best_tour_size)
-    return [int(i) for i in retrieved_best_tour]
+    retrieved_best_tour, retrieved_tuple_name = tslib.tsget(best_tour_name, best_tour_size)
+    # this slice and split is to convert "[1, 2, 3]" to a list of strings e.g. ["1", "2", "3"]
+    return [int(i) for i in retrieved_best_tour[1:-1].split(", ")]
 
 
 def put_effective_calcs():
