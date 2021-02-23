@@ -155,7 +155,7 @@ def get_best_tour(num_vertices):
 
 
 def put_effective_calcs(effective_calcs):
-    return_value = tslib.tsput_bytes(effective_calcs_name, effective_calcs, sys.getsizeof(effective_calcs))
+    return_value = tslib.tsput(effective_calcs_name, str(effective_calcs), sys.getsizeof(effective_calcs))
     if return_value == 1:
         return 1
     else:
