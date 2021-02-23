@@ -3,3 +3,4 @@ pyrunner
 .__pycache__/
 *.pyc
 tsp_out.txt
+todo.txt
