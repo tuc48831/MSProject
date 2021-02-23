@@ -8,6 +8,7 @@ import tslib_so_interface as tslib
 cost_matrix_name = "cost_matrix"
 start_tuple_name = "start"
 global_minimum_name = "global_min"
+best_tour_name = "best_tour"
 
 
 class TspSearchTreeList:
@@ -129,16 +130,25 @@ def get_global_minimum():
     return int(retrieved_global_min)
 
 
-def put_best_tour():
-    return
+def put_best_tour(best_tour, num_vertices):
+    # use matrix size * size of int, which should be enough
+    return_value = tslib.tsput(best_tour_name, best_tour, sys.getsizeof(int()) * num_vertices)
+    if return_value == 1:
+        return 1
+    else:
+        return 0
 
 
-def read_best_tour():
-    return
+def read_best_tour(num_vertices):
+    best_tour_size = sys.getsizeof(int()) * num_vertices
+    retrieved_best_tour, retrieved_tuple_name = tslib.tsread(start_tuple_name, best_tour_size)
+    return [int(i) for i in retrieved_best_tour]
 
 
-def get_best_tour():
-    return
+def get_best_tour(num_vertices):
+    best_tour_size = sys.getsizeof(int()) * num_vertices
+    retrieved_best_tour, retrieved_tuple_name = tslib.tsget(start_tuple_name, best_tour_size)
+    return [int(i) for i in retrieved_best_tour]
 
 
 def put_effective_calcs():

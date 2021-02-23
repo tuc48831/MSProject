@@ -61,38 +61,18 @@ if __name__ == '__main__':
         # write calculated cost matrix to a file and remember file name
         cost_matrix_file_location = arguments.matrix_file_location
 
-    # either have raw file cost matrix OR file that we just generated
-    if arguments.stored_tuple_name:
-        # load file into a matrix
-        matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",", header=None)
-        # TODO: # double check matrix squareness and place dimension into tuple space???
-            # its the start tuple lmao
-        # call tsput on matrix
-        tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
+    # load file into a matrix
+    matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",", header=None)
+    # TODO: # double check matrix squareness and place dimension into tuple space???
+        # its the start tuple lmao
+    # call tsput on matrix
+    tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
+    retrieved_matrix = tsp.get_cost_matrix_from_tuple_space("tsp_matrix", 6)
 
-        retrieved_matrix = tsp.get_cost_matrix_from_tuple_space("tsp_matrix", 6)
-        print('retrieved matrix is: ' + str(retrieved_matrix))
-        print('retrieved matrix squared is: ' + str(retrieved_matrix.dot(retrieved_matrix)))
-    #
-    temp_tour, cur_tour = None, None
-    # start the problem
-    start_time = datetime.datetime.now()
-    global_minimum = float('inf')
-    local_minimum = float('inf')
-    processors = tsp.get_num_processors()
+    best_tour = [6, 5, 4, 3, 2, 1]
+    tsp.put_best_tour(best_tour, 6)
 
-    matrix_size = tsp.read_start()
-    best_tour = [0 * matrix_size]
-    tsp.put_best_tour(best_tour)
-
-    search_tree_list = tsp.TspSearchTreeList.get_instance()
-
-
-
-    end_time = datetime.datetime.now()
-    running_time = end_time - start_time
-    best_tour = tsp.get_best_tour()
-    effective_calcs = tsp.get_effective_calcs()
-    write_output_file(global_minimum, best_tour, effective_calcs, running_time)
+    retrieved_best_tour = tsp.get_best_tour(6)
+    print('retrieved best_tour is: ' + str(retrieved_best_tour))
 
     sys.exit(0)
