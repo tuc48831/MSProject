@@ -28,6 +28,7 @@ def tsput(tuple_name, tuple_value, tuple_size):
     else:
         return 0
 
+
 def tsput_bytes(tuple_name, tuple_value, tuple_size):
     if tuple_size <= 0:
         return 1
