@@ -9,6 +9,7 @@ cost_matrix_name = "cost_matrix"
 start_tuple_name = "start"
 global_minimum_name = "global_min"
 best_tour_name = "best_tour"
+effective_calcs_name = "effective_calcs"
 
 
 class TspSearchTreeList:
@@ -120,13 +121,13 @@ def put_global_minimum(global_min):
 
 def read_global_minimum():
     global_min = -1
-    retrieved_global_min, retrieved_tuple_name = tslib.tsread(start_tuple_name, sys.getsizeof(global_min))
+    retrieved_global_min, retrieved_tuple_name = tslib.tsread(global_minimum_name, sys.getsizeof(global_min))
     return int(retrieved_global_min)
 
 
 def get_global_minimum():
     global_min = -1
-    retrieved_global_min, retrieved_tuple_name = tslib.tsget(start_tuple_name, sys.getsizeof(global_min))
+    retrieved_global_min, retrieved_tuple_name = tslib.tsget(global_minimum_name, sys.getsizeof(global_min))
     return int(retrieved_global_min)
 
 
@@ -153,16 +154,24 @@ def get_best_tour(num_vertices):
     return [int(i) for i in retrieved_best_tour[1:-1].split(", ")]
 
 
-def put_effective_calcs():
-    return
+def put_effective_calcs(effective_calcs):
+    return_value = tslib.tsput(effective_calcs_name, effective_calcs, sys.getsizeof(effective_calcs))
+    if return_value == 1:
+        return 1
+    else:
+        return 0
 
 
 def read_effective_calcs():
-    return
+    effective_calcs = -1
+    retrieved_effective_calcs, retrieved_tuple_name = tslib.tsread(effective_calcs_name, sys.getsizeof(effective_calcs))
+    return int(retrieved_effective_calcs)
 
 
 def get_effective_calcs():
-    return
+    effective_calcs = -1
+    retrieved_effective_calcs, retrieved_tuple_name = tslib.tsget(effective_calcs_name, sys.getsizeof(effective_calcs))
+    return int(retrieved_effective_calcs)
 
 
 def put_node():

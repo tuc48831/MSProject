@@ -71,8 +71,13 @@ if __name__ == '__main__':
 
     best_tour = [6, 5, 4, 3, 2, 1]
     tsp.put_best_tour(best_tour, 6)
-
     retrieved_best_tour = tsp.get_best_tour(6)
     print('retrieved best_tour is: ' + str(retrieved_best_tour))
+
+    effective_calcs = 1234509876
+    print("effective calcs is: %d", effective_calcs)
+    tsp.put_effective_calcs(effective_calcs)
+    retrieved_effective_calcs = tsp.get_effective_calcs()
+    print("retrieved effective calcs is: %d", retrieved_effective_calcs)
 
     sys.exit(0)
