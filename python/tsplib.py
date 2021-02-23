@@ -112,7 +112,7 @@ def get_start():
 
 
 def put_global_minimum(global_min):
-    return_value = tslib.tsput(global_minimum_name, global_min, sys.getsizeof(global_min))
+    return_value = tslib.tsput(global_minimum_name, str(global_min), sys.getsizeof(str(global_min)))
     if return_value == 1:
         return 1
     else:
@@ -120,14 +120,14 @@ def put_global_minimum(global_min):
 
 
 def read_global_minimum():
-    global_min = -1
-    retrieved_global_min, retrieved_tuple_name = tslib.tsread(global_minimum_name, sys.getsizeof(global_min))
+    global_min = sys.maxsize
+    retrieved_global_min, retrieved_tuple_name = tslib.tsread(global_minimum_name, sys.getsizeof(str(global_min)))
     return int(retrieved_global_min)
 
 
 def get_global_minimum():
-    global_min = -1
-    retrieved_global_min, retrieved_tuple_name = tslib.tsget(global_minimum_name, sys.getsizeof(global_min))
+    global_min = sys.maxsize
+    retrieved_global_min, retrieved_tuple_name = tslib.tsget(global_minimum_name, sys.getsizeof(str(global_min)))
     return int(retrieved_global_min)
 
 
@@ -155,7 +155,7 @@ def get_best_tour(num_vertices):
 
 
 def put_effective_calcs(effective_calcs):
-    return_value = tslib.tsput(effective_calcs_name, str(effective_calcs), sys.getsizeof(effective_calcs))
+    return_value = tslib.tsput(effective_calcs_name, str(effective_calcs), sys.getsizeof(str(effective_calcs)))
     if return_value == 1:
         return 1
     else:
@@ -164,13 +164,15 @@ def put_effective_calcs(effective_calcs):
 
 def read_effective_calcs():
     effective_calcs = -1
-    retrieved_effective_calcs, retrieved_tuple_name = tslib.tsread(effective_calcs_name, sys.getsizeof(effective_calcs))
+    retrieved_effective_calcs, retrieved_tuple_name = tslib.tsread(effective_calcs_name,
+                                                                   sys.getsizeof(str(effective_calcs)))
     return int(retrieved_effective_calcs)
 
 
 def get_effective_calcs():
-    effective_calcs = -1
-    retrieved_effective_calcs, retrieved_tuple_name = tslib.tsget(effective_calcs_name, sys.getsizeof(effective_calcs))
+    effective_calcs = sys.maxsize
+    retrieved_effective_calcs, retrieved_tuple_name = tslib.tsget(effective_calcs_name,
+                                                                  sys.getsizeof(str(effective_calcs)))
     return int(retrieved_effective_calcs)
 
 
