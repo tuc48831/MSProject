@@ -12,7 +12,8 @@ search_tree_list = None
 # arg parser that has api-key, mutually exclusive indicator to load either cost matrix/coords
 def parse_args():
     parser = argparse.ArgumentParser(prog='tspclnt')
-    parser.add_argument('-s', '--store_tuple_space', dest='stored_tuple_name', help='store the cost matrix in the tuple space')
+    # for now always store matrix in tuple space
+    # parser.add_argument('-s', '--store_tuple_space', dest='stored_tuple_name', help='store the cost matrix in the tuple space')
     parser.add_argument('-a', '--api_key', dest='api_key', help='The google maps API key for turning coords into a cost matrix, unncessary for --matrix')
     # args with defaults
     parser.add_argument('-n', '--nodes', dest='num_nodes', default=20, help='The maximum number of nodes')
@@ -26,6 +27,8 @@ def parse_args():
     if args.api_key and not args.coord_file_location:
         print("API key is required to run with coordinates file option")
         sys.exit(1)
+    # move coord parsing to here
+
     return args
 
 
@@ -61,19 +64,15 @@ if __name__ == '__main__':
         # write calculated cost matrix to a file and remember file name
         cost_matrix_file_location = arguments.matrix_file_location
 
-    # either have raw file cost matrix OR file that we just generated
-    if arguments.stored_tuple_name:
-        # load file into a matrix
-        matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",", header=None)
-        # TODO: # double check matrix squareness and place dimension into tuple space???
-            # its the start tuple lmao
-        # call tsput on matrix
-        tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
+    matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",", header=None)
+    matrix_shape = matrix.shape
+    if matrix_shape[0] != matrix_shape[1]:
+        print('Given matrix was not square, terminating tspclnt.py!')
+        sys.exit(1)
 
-        retrieved_matrix = tsp.get_cost_matrix_from_tuple_space("tsp_matrix", 6)
-        print('retrieved matrix is: ' + str(retrieved_matrix))
-        print('retrieved matrix squared is: ' + str(retrieved_matrix.dot(retrieved_matrix)))
-    #
+    # call tsput on matrix
+    tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
+
     temp_tour, cur_tour = None, None
     # start the problem
     start_time = datetime.datetime.now()
@@ -81,8 +80,7 @@ if __name__ == '__main__':
     local_minimum = float('inf')
     processors = tsp.get_num_processors()
 
-    matrix_size = tsp.read_start()
-    best_tour = [0 * matrix_size]
+    best_tour = [0 * matrix_shape[0]]
     tsp.put_best_tour(best_tour)
 
     search_tree_list = tsp.TspSearchTreeList.get_instance()

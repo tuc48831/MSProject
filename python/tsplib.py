@@ -3,6 +3,9 @@ import numpy
 import sys
 
 import tslib_so_interface as tslib
+from collections import namedtuple
+import json
+from json import JSONEncoder
 
 # tuple names
 cost_matrix_name = "cost_matrix"
@@ -10,6 +13,7 @@ start_tuple_name = "start"
 global_minimum_name = "global_min"
 best_tour_name = "best_tour"
 effective_calcs_name = "effective_calcs"
+node_prefix = "tsp_node"
 
 
 class TspSearchTreeList:
@@ -49,14 +53,25 @@ class TspSearchTreeList:
 
 
 class TspNode:
-    def __init__(self, num_nodes, cost, tour, next_node):
+    def __init__(self, num_nodes, tour, next_node=None):
         # the total number of nodes in the problem
-        self.nodes = num_nodes
-        # total cost of the tour
-        self.cost = cost
+        self.num_nodes = num_nodes
         # tour is an array of int indicating node order in the tour
         self.tour = tour
         self.next_node = next_node
+
+
+class Tour:
+    def __init__(self, order, cost):
+        self.order = order
+        self.cost = cost
+
+
+def custom_node_decoder(node_dict):
+    return namedtuple('X', node_dict.keys())(*node_dict.values())
+
+
+example_node_for_size = TspNode(sys.maxsize, Tour(sys.maxsize, sys.maxsize), None)
 
 
 def get_num_processors():
@@ -176,19 +191,43 @@ def get_effective_calcs():
     return int(retrieved_effective_calcs)
 
 
-def put_node():
+def put_node(node, node_identifier):
+    node_as_json = json.dumps(node)
+    node_as_json_size = sys.getsizeof(node_as_json)
+    # store the size of the tuple in its
+    return_value = tslib.tsput(node_identifier + "_size", node_as_json_size, sys.getsizeof(sys.maxsize))
+    if return_value == 1:
+        return 1
+    return_value = tslib.tsput(node_identifier, node_as_json, node_as_json_size)
+    if return_value == 1:
+        return 1
+    else:
+        return 0
+
+
+def read_node(node_identifier):
+    node_size = sys.getsizeof(example_node_for_size)
+    retrieved_node_as_json, retrieved_node_identifier = tslib.tsread(node_identifier, node_size)
+    node = json.loads(retrieved_node_as_json, object_hook=custom_node_decoder)
+    return node
+
+
+def get_node(node_identifier):
+    node_size = sys.getsizeof(example_node_for_size)
+    retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(node_identifier, node_size)
+    node = json.loads(retrieved_node_as_json, object_hook=custom_node_decoder)
+    return node
+
+
+def put_finished_node(finished_node, node_identifier):
     return
 
 
-def get_node():
+def read_finished_node(node_identifier):
     return
 
 
-def put_finished_node():
-    return
-
-
-def get_finished_node():
+def get_finished_node(node_identifier):
     return
 
 

@@ -75,9 +75,18 @@ if __name__ == '__main__':
     print('retrieved best_tour is: ' + str(retrieved_best_tour))
 
     effective_calcs = 1234509876
-    print("effective calcs is: %d", effective_calcs)
+    print("effective calcs is: {}", effective_calcs)
     tsp.put_effective_calcs(effective_calcs)
     retrieved_effective_calcs = tsp.get_effective_calcs()
-    print("retrieved effective calcs is: %d", retrieved_effective_calcs)
+    print("retrieved effective calcs is: {}", retrieved_effective_calcs)
+
+    tour = tsp.Tour("1,3,2,4,6,8,5,7,9,10", 1122334455)
+    node = tsp.TspNode(10, tour)
+    node_name = tsp.node_prefix + "_001"
+    print("node name is: {} and value is: {}", node_name, node)
+    tsp.put_node(node, node_name)
+    retrieved_node = tsp.get_node(node_name)
+    node_name = tsp.node_prefix + "_001"
+    print("retrieved node name is: {} and retrieved value is: {}", node_name, retrieved_node)
 
     sys.exit(0)
