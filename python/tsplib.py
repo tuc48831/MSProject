@@ -198,7 +198,7 @@ def get_effective_calcs():
 
 def put_node(node, node_identifier):
     node_as_json = node.to_json()
-    node_as_json_size = sys.getsizeof(node_as_json)
+    node_as_json_size = len(node_as_json)
     # store the size of the tuple in its
     node_size_identifier = node_identifier + "_size"
     return_value = tslib.tsput(node_size_identifier, str(node_as_json_size), sys.getsizeof(int()))
