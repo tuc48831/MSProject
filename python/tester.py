@@ -86,7 +86,6 @@ if __name__ == '__main__':
     print("node name is: {} and value is: {}".format(node_name, node.to_json()))
     tsp.put_node(node, node_name)
     retrieved_node = tsp.get_node(node_name)
-    node_name = tsp.node_prefix + "_001"
-    print("retrieved node name is: {} and retrieved value is: {}".format(node_name, retrieved_node))
+    print("retrieved node name is: {} and retrieved value is: {}".format(node_name, retrieved_node.to_json()))
 
     sys.exit(0)
