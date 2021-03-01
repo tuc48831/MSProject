@@ -201,7 +201,7 @@ def put_node(node, node_identifier):
     node_as_json_size = len(node_as_json)
     # store the size of the tuple in its
     node_size_identifier = node_identifier + "_size"
-    return_value = tslib.tsput(node_size_identifier, str(node_as_json_size), sys.getsizeof(int()))
+    return_value = tslib.tsput(node_size_identifier, str(node_as_json_size), sys.getsizeof(str(int())))
     if return_value == 1:
         return 1
     return_value = tslib.tsput(node_identifier, node_as_json, node_as_json_size)
@@ -234,12 +234,12 @@ def get_node(node_identifier):
 
 
 def read_node_size(node_size_identifier):
-    retrieved_node_size, retrieved_node_size_identifier = tslib.tsread(node_size_identifier, sys.getsizeof(int()))
+    retrieved_node_size, retrieved_node_size_identifier = tslib.tsread(node_size_identifier, sys.getsizeof(str(int())))
     return int(retrieved_node_size)
 
 
 def get_node_size(node_size_identifier):
-    retrieved_node_size, retrieved_node_size_identifier = tslib.tsget(node_size_identifier, sys.getsizeof(int()))
+    retrieved_node_size, retrieved_node_size_identifier = tslib.tsget(node_size_identifier, sys.getsizeof(str(int())))
     return int(retrieved_node_size)
 
 
