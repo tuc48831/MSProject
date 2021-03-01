@@ -80,6 +80,7 @@ class TspNode:
         else:
             return TspNode(num_nodes, tour)
 
+
 class Tour:
     def __init__(self, order, cost):
         # a comma separated string of the order of nodes
@@ -216,7 +217,7 @@ def get_effective_calcs():
 
 
 def put_node(node, node_identifier):
-    node_as_json = json.dumps(node)
+    node_as_json = node.to_json()
     node_as_json_size = sys.getsizeof(node_as_json)
     # store the size of the tuple in its
     return_value = tslib.tsput(node_identifier + "_size", node_as_json_size, sys.getsizeof(sys.maxsize))
