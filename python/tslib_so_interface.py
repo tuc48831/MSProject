@@ -84,6 +84,8 @@ def tsget(tuple_name, string_buffer_size):
     if return_value > string_buffer_size or return_value == -107:
         return 1
     else:
+        print(string_buffer.value)
+        print(tuple_name_as_buffer.value)
         return string_buffer.value.decode('utf-8'), tuple_name_as_buffer.value.decode('utf-8')
 
 
