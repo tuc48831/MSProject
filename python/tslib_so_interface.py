@@ -89,7 +89,7 @@ def tsget(tuple_name, string_buffer_size):
     else:
         print(string_buffer.value)
         print(tuple_name_as_buffer.value)
-        return string_buffer.value.decode('utf-8'), tuple_name_as_buffer.value.decode('utf-8')
+        return str(string_buffer.value.decode('utf-8')), tuple_name_as_buffer.value.decode('utf-8')
 
 
 def tsget_bytes(tuple_name, string_buffer_size):
