@@ -235,8 +235,7 @@ def put_node(node, node_identifier):
 def read_node(node_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
     node_size_identifier = node_identifier + "_size"
-    retrieved_node_size, retrieved_node_size_identifier = tslib.tsread(node_size_identifier, sys.getsizeof(int()))
-    retrieved_node_size = int(retrieved_node_size)
+    retrieved_node_size = read_node_size(node_size_identifier)
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsread(node_identifier, retrieved_node_size)
     node = TspNode.from_json(retrieved_node_as_json)
     return node
@@ -245,11 +244,20 @@ def read_node(node_identifier):
 def get_node(node_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
     node_size_identifier = node_identifier + "_size"
-    retrieved_node_size, retrieved_node_size_identifier = tslib.tsget(node_size_identifier, sys.getsizeof(int()))
-    retrieved_node_size = int(retrieved_node_size)
+    retrieved_node_size = get_node_size(node_size_identifier)
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(node_identifier, retrieved_node_size)
     node = TspNode.from_json(retrieved_node_as_json)
     return node
+
+
+def read_node_size(node_size_identifier):
+    retrieved_node_size, retrieved_node_size_identifier = tslib.tsread(node_size_identifier, sys.getsizeof(int()))
+    return int(retrieved_node_size)
+
+
+def get_node_size(node_size_identifier):
+    retrieved_node_size, retrieved_node_size_identifier = tslib.tsget(node_size_identifier, sys.getsizeof(int()))
+    return int(retrieved_node_size)
 
 
 def put_finished_node(finished_node, node_identifier):
