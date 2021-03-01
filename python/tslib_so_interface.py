@@ -77,6 +77,8 @@ def tsget(tuple_name, string_buffer_size):
     string_buffer = ctypes.create_string_buffer(string_buffer_size)
     # unsure of possible maximum tuple length/return value
     tuple_name_as_buffer = ctypes.create_string_buffer(2*len(tuple_name))
+    # try explicitly setting whole buffer to null terminator
+    tuple_name_as_buffer.value = '\x00' * 2 * len(tuple_name)
     tuple_name_as_buffer.value = tuple_name.encode('utf-8')
     return_value = libso.tsget(tuple_name_as_buffer, string_buffer, string_buffer_size)
     # return value is the tuple size, so if it is larger than the buffer we pass in there is a problem
