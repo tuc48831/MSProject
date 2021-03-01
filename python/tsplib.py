@@ -13,7 +13,7 @@ start_tuple_name = "start"
 global_minimum_name = "global_min"
 best_tour_name = "best_tour"
 effective_calcs_name = "effective_calcs"
-node_prefix = "tsp_node"
+node_prefix = "tn"
 
 
 class TspSearchTreeList:
