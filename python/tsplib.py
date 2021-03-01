@@ -69,7 +69,7 @@ class TspNode:
         self.next_node = next_node
 
     def to_json(self):
-        return json.dumps(self, cls=TSPEncoder, sort_keys=True)
+        return json.dumps(self, default=lambda o: o.__dict__, cls=TSPEncoder, sort_keys=True)
 
     @staticmethod
     def from_json(json_string):
