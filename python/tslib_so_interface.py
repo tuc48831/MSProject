@@ -20,6 +20,8 @@ def tsput(tuple_name, tuple_value, tuple_size):
     tuple_name_as_buffer.value = tuple_name.encode('utf-8')
     tuple_value_as_buffer = ctypes.create_string_buffer(len(tuple_value))
     tuple_value_as_buffer.value = tuple_value.encode('utf-8')
+    print(tuple_value_as_buffer.value)
+    print(tuple_name_as_buffer.value)
     return_value = libso.tsput(tuple_name_as_buffer, tuple_value_as_buffer, tuple_size)
     # return value checking, tsput either returns (int)ntohs(in.error) which i think is always 400 when success or a negative number so this error checking is 'safe'
     # OR ts put error is defined as -106 in tslib.c, usually because tsh is not running
@@ -78,7 +80,6 @@ def tsget(tuple_name, string_buffer_size):
     # unsure of possible maximum tuple length/return value
     tuple_name_as_buffer = ctypes.create_string_buffer(2*len(tuple_name))
     # try explicitly setting whole buffer to null terminator
-    tuple_name_as_buffer.value = ('\x00' * 2 * len(tuple_name)).encode('utf-8')
     tuple_name_as_buffer.value = tuple_name.encode('utf-8')
     return_value = libso.tsget(tuple_name_as_buffer, string_buffer, string_buffer_size)
     # return value is the tuple size, so if it is larger than the buffer we pass in there is a problem
