@@ -72,11 +72,12 @@ class TspNode:
         return json.dumps(self, default=lambda o: o.__dict__, cls=TSPEncoder, sort_keys=True)
 
     @staticmethod
-    def from_json(json_string):
-        num_nodes = json_string['num_nodes']
-        tour = Tour.from_json(json_string['tour'])
-        if 'next_node' in json_string:
-            return TspNode(num_nodes, tour, json_string['next_node'])
+    def from_json_string(json_string):
+        real_json = json.loads(json_string)
+        num_nodes = real_json['num_nodes']
+        tour = Tour.from_json(real_json['tour'])
+        if 'next_node' in real_json:
+            return TspNode(num_nodes, tour, real_json['next_node'])
         else:
             return TspNode(num_nodes, tour)
 
