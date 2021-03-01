@@ -52,6 +52,14 @@ class TspSearchTreeList:
         return
 
 
+class TSPEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, Tour):
+            return obj.to_json()
+        return super(TSPEncoder, self).default(obj)
+
+
 class TspNode:
     def __init__(self, num_nodes, tour, next_node=None):
         # the total number of nodes in the problem
@@ -60,15 +68,31 @@ class TspNode:
         self.tour = tour
         self.next_node = next_node
 
+    def to_json(self):
+        return json.dumps(self, cls=TSPEncoder, sort_keys=True)
+
+    @staticmethod
+    def from_json(json_string):
+        num_nodes = json_string['num_nodes']
+        tour = Tour.from_json(json_string['tour'])
+        if 'next_node' in json_string:
+            return TspNode(num_nodes, tour, json_string['next_node'])
+        else:
+            return TspNode(num_nodes, tour)
 
 class Tour:
     def __init__(self, order, cost):
+        # a comma separated string of the order of nodes
         self.order = order
+        # an integer representing the cost of traversal associated with that order
         self.cost = cost
 
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
 
-def custom_node_decoder(node_dict):
-    return namedtuple('X', node_dict.keys())(*node_dict.values())
+    @staticmethod
+    def from_json(json_string):
+        return Tour(json_string['order'], json_string['cost'])
 
 
 example_node_for_size = TspNode(sys.maxsize, Tour(sys.maxsize, sys.maxsize), None)
@@ -208,14 +232,14 @@ def put_node(node, node_identifier):
 def read_node(node_identifier):
     node_size = sys.getsizeof(example_node_for_size)
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsread(node_identifier, node_size)
-    node = json.loads(retrieved_node_as_json, object_hook=custom_node_decoder)
+    node = TspNode.from_json(retrieved_node_as_json)
     return node
 
 
 def get_node(node_identifier):
     node_size = sys.getsizeof(example_node_for_size)
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(node_identifier, node_size)
-    node = json.loads(retrieved_node_as_json, object_hook=custom_node_decoder)
+    node = TspNode.from_json(retrieved_node_as_json)
     return node
 
 
