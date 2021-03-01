@@ -52,52 +52,31 @@ class TspSearchTreeList:
         return
 
 
-class TSPEncoder(json.JSONEncoder):
-
-    def default(self, obj):
-        if isinstance(obj, Tour):
-            return obj.to_json()
-        return super(TSPEncoder, self).default(obj)
-
-
 class TspNode:
-    def __init__(self, num_nodes, tour, next_node=None):
+    def __init__(self, num_nodes, cost, order, next_node=None):
         # the total number of nodes in the problem
         self.num_nodes = num_nodes
         # tour is an array of int indicating node order in the tour
-        self.tour = tour
+        self.cost = cost
+        self.order = order
         self.next_node = next_node
 
     def to_json(self):
-        return json.dumps(self, default=lambda o: o.__dict__, cls=TSPEncoder, sort_keys=True)
+        return json.dumps(self, default=lambda o: o.__dict__)
 
     @staticmethod
     def from_json_string(json_string):
         real_json = json.loads(json_string)
         num_nodes = real_json['num_nodes']
-        tour = Tour.from_json(real_json['tour'])
+        cost = real_json['cost']
+        order = real_json['order']
         if 'next_node' in real_json:
-            return TspNode(num_nodes, tour, real_json['next_node'])
+            return TspNode(num_nodes, cost, order, real_json['next_node'])
         else:
-            return TspNode(num_nodes, tour)
+            return TspNode(num_nodes, cost, order)
 
 
-class Tour:
-    def __init__(self, order, cost):
-        # a comma separated string of the order of nodes
-        self.order = order
-        # an integer representing the cost of traversal associated with that order
-        self.cost = cost
-
-    def to_json(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
-
-    @staticmethod
-    def from_json(json_string):
-        return Tour(json_string['order'], json_string['cost'])
-
-
-example_node_for_size = TspNode(sys.maxsize, Tour(sys.maxsize, sys.maxsize), None)
+example_node_for_size = TspNode(sys.maxsize, sys.maxsize, sys.maxsize, None)
 
 
 def get_num_processors():
