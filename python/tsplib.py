@@ -237,7 +237,7 @@ def read_node(node_identifier):
     node_size_identifier = node_identifier + "_size"
     retrieved_node_size = read_node_size(node_size_identifier)
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsread(node_identifier, retrieved_node_size)
-    node = TspNode.from_json(retrieved_node_as_json)
+    node = TspNode.from_json_string(retrieved_node_as_json)
     return node
 
 
@@ -246,7 +246,7 @@ def get_node(node_identifier):
     node_size_identifier = node_identifier + "_size"
     retrieved_node_size = get_node_size(node_size_identifier)
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(node_identifier, retrieved_node_size)
-    node = TspNode.from_json(retrieved_node_as_json)
+    node = TspNode.from_json_string(retrieved_node_as_json)
     return node
 
 
