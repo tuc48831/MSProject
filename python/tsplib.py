@@ -3,9 +3,7 @@ import numpy
 import sys
 
 import tslib_so_interface as tslib
-from collections import namedtuple
 import json
-from json import JSONEncoder
 
 # tuple names
 cost_matrix_name = "cost_matrix"
@@ -13,7 +11,8 @@ start_tuple_name = "start"
 global_minimum_name = "global_min"
 best_tour_name = "best_tour"
 effective_calcs_name = "effective_calcs"
-node_prefix = "tn"
+node_prefix = "tsp_node"
+finished_node_prefix = "finished_node"
 
 
 class TspSearchTreeList:
@@ -41,15 +40,23 @@ class TspSearchTreeList:
 
     def enqueue(self, tsp_node):
         if tsp_node is not isinstance(tsp_node, TspNode):
-            return
+            return False
+        if self.empty():
+            self.__search_tree_list = tsp_node
+        else:
+            tsp_node.next_node = self.__search_tree_list
+            self.__search_tree_list = tsp_node
         self.__node_count += 1
-        return
+        return True
 
     def dequeue(self):
         if self.empty():
             return None
-        self.__node_count -= 1
-        return
+        else:
+            temp_node = self.__search_tree_list
+            self.__search_tree_list = temp_node.next_node
+            self.__node_count -= 1
+            return temp_node
 
 
 class TspNode:
@@ -63,6 +70,9 @@ class TspNode:
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__)
+
+    def is_complete(self, num_vertices):
+        return self.num_nodes == num_vertices
 
     @staticmethod
     def from_json_string(json_string):
@@ -200,7 +210,7 @@ def put_node(node, node_identifier):
     node_as_json = node.to_json()
     node_as_json_size = len(node_as_json)
     # store the size of the tuple in its
-    node_size_identifier = node_identifier + "_size"
+    node_size_identifier = "size_" + node_identifier
     return_value = tslib.tsput(node_size_identifier, str(node_as_json_size), sys.getsizeof(str(int())))
     if return_value == 1:
         return 1
@@ -213,7 +223,7 @@ def put_node(node, node_identifier):
 
 def read_node(node_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
-    node_size_identifier = node_identifier + "_size"
+    node_size_identifier = "size_" + node_identifier
     retrieved_node_size = read_node_size(node_size_identifier)
     print("retrieved node size is: {}".format(retrieved_node_size))
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsread(node_identifier, retrieved_node_size)
@@ -224,7 +234,7 @@ def read_node(node_identifier):
 
 def get_node(node_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
-    node_size_identifier = node_identifier + "_size"
+    node_size_identifier = "size_" + node_identifier
     retrieved_node_size = get_node_size(node_size_identifier)
     print("retrieved node size is: {}".format(retrieved_node_size))
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(node_identifier, retrieved_node_size)
@@ -256,5 +266,9 @@ def get_finished_node(node_identifier):
 
 
 def make_child():
-    return
+    child = None
+
+    if False:
+        return None
+    return child
 

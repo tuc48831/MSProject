@@ -6,7 +6,6 @@ import datetime
 import tsplib as tsp
 
 API_KEY = None
-search_tree_list = None
 
 
 # arg parser that has api-key, mutually exclusive indicator to load either cost matrix/coords
@@ -45,6 +44,14 @@ def convert_coords_to_cost_matrix(address_file_location, api_key):
     return "cost_file_matrix_location"
 
 
+def enqueue(num_nodes, cost, tour):
+    pass
+
+
+def dequeue(num_nodes, cost, tour):
+    pass
+
+
 def write_output_file(global_min, best_found_tour, effective_calculations, elapsed_time):
     file = open('tsp_out.txt', 'a+')
     result_string = 'global_minimum: ' + str(global_min) + ' best_tour: ' + str(best_found_tour) + \
@@ -67,13 +74,15 @@ if __name__ == '__main__':
     matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",", header=None)
     matrix_shape = matrix.shape
     if matrix_shape[0] != matrix_shape[1]:
-        print('Given matrix was not square, terminating tspclnt.py!')
+        print('Given matrix shape: {} was not square, terminating tspclnt.py!'.format(str(matrix_shape)))
         sys.exit(1)
+    num_vertices = matrix_shape[0]
 
     # call tsput on matrix
     tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
 
     temp_tour, cur_tour = None, None
+    node_count = 0
     # start the problem
     start_time = datetime.datetime.now()
     global_minimum = float('inf')
@@ -82,14 +91,53 @@ if __name__ == '__main__':
 
     best_tour = [0 * matrix_shape[0]]
     tsp.put_best_tour(best_tour)
+    best_tour_found = False
 
+    num_processors = tsp.get_num_processors()
     search_tree_list = tsp.TspSearchTreeList.get_instance()
 
+    while search_tree_list.get_node_count() <= num_processors * arguments.load_balancing_constant \
+            and not search_tree_list.empty():
+        temp_node = search_tree_list.dequeue()
+        if temp_node.cost < global_minimum:
+            for i in range(num_vertices):
+                child = tsp.make_child()
+                if child is not None:
+                    if child.is_complete(num_vertices):
+                        if child.cost < global_minimum:
+                            global_minimum = child.cost
+                            best_tour = child.order
+                            best_tour_found = True
+                    else:
+                        effective_calcs = tsp.get_effective_calcs()
+                        effective_calcs += 1
+                        tsp.put_effective_calcs(effective_calcs)
+                        search_tree_list.enqueue(child)
 
+    i = 0
+
+    if not best_tour_found:
+        while not search_tree_list.empty():
+            temp_node = search_tree_list.dequeue()
+            i += 1
+            node_identifier = "node{}".format(str(i))
+            tsp.put_node(temp_node, node_identifier)
+
+        tuples_sent = i
+
+        tuples_processed = 0
+        while tuples_processed < tuples_sent:
+            finished_name = "ff*"
+            tsp.get_node(finished_name)
+            tuples_processed += 1
+    # else best tour already found above
+    else:
+        term_node = tsp.TspNode(-1, -1, -1)
+        tsp.put_node(term_node, "node0")
 
     end_time = datetime.datetime.now()
     running_time = end_time - start_time
-    best_tour = tsp.get_best_tour()
+    best_tour = tsp.get_best_tour(num_vertices)
     effective_calcs = tsp.get_effective_calcs()
     write_output_file(global_minimum, best_tour, effective_calcs, running_time)
 
