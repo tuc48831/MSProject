@@ -275,7 +275,7 @@ def put_tour(tour, tour_identifier):
 
 def read_tour(tour_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
-    tour_size = TspTour.get_max_tour_size
+    tour_size = TspTour.get_max_tour_size()
     retrieved_tour_as_json, retrieved_tour_identifier = tslib.tsread(tour_identifier, tour_size)
     print("retrieved node as json is: {}".format(retrieved_tour_as_json))
     node = TspTour.from_json_string(retrieved_tour_as_json)
@@ -284,7 +284,7 @@ def read_tour(tour_identifier):
 
 def get_tour(tour_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
-    tour_size = TspTour.get_max_tour_size
+    tour_size = TspTour.get_max_tour_size()
     retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(tour_identifier, tour_size)
     print("retrieved node as json is: {}".format(retrieved_node_as_json))
     node = TspTour.from_json_string(retrieved_node_as_json)
