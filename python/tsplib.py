@@ -106,6 +106,7 @@ class TspTour:
 
     @staticmethod
     def from_json_string(json_string):
+        print(json_string)
         real_json = json.loads(json_string)
         num_nodes = real_json['num_nodes']
         cost = real_json['cost']
@@ -128,7 +129,7 @@ class TspTour:
         if not TspTour.max_vertices:
             print("ERROR: tried to determine node info without setting max vertices")
             sys.exit(1)
-        return sys.getsizeof(TspTour(TspTour.max_vertices, sys.maxsize, [0]*TspTour.max_vertices))
+        return sys.getsizeof(TspTour(TspTour.max_vertices, sys.maxsize, [0]*TspTour.max_vertices).to_json())
 
 
 def get_num_processors():
