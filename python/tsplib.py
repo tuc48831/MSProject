@@ -261,11 +261,6 @@ def get_effective_calcs():
 def put_tour(tour, tour_identifier):
     tour_as_json = tour.to_json()
     tour_as_json_size = TspTour.get_max_tour_size()
-    # store the size of the tuple in its
-    tour_size_identifier = "size_" + tour_identifier
-    return_value = tslib.tsput(tour_size_identifier, str(tour_as_json_size), sys.getsizeof(str(int())))
-    if return_value == 1:
-        return 1
     return_value = tslib.tsput(tour_identifier, tour_as_json, tour_as_json_size)
     if return_value == 1:
         return 1
