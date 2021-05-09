@@ -12,7 +12,7 @@ API_KEY = None
 def parse_args():
     parser = argparse.ArgumentParser(prog='tspclnt')
     # for now always store matrix in tuple space
-    # parser.add_argument('-s', '--store_tuple_space', dest='stored_tuple_name', help='store the cost matrix in the tuple space')
+    parser.add_argument('-s', '--store_matrix_tuple_space', dest='store_matrix_tuple_space', help='store the cost matrix in the tuple space')
     parser.add_argument('-a', '--api_key', dest='api_key', help='The google maps API key for turning coords into a cost matrix, unncessary for --matrix')
     # args with defaults
     parser.add_argument('-n', '--nodes', dest='num_nodes', default=20, help='The maximum number of nodes')
@@ -52,9 +52,9 @@ def dequeue(num_nodes, cost, tour):
     pass
 
 
-def write_output_file(global_min, best_found_tour, effective_calculations, elapsed_time):
+def write_output_file(global_min, best_found_tour: tsp.TspTour, effective_calculations, elapsed_time):
     file = open('tsp_out.txt', 'a+')
-    result_string = 'global_minimum: ' + str(global_min) + ' best_tour: ' + str(best_found_tour) + \
+    result_string = 'global_minimum: ' + str(global_min) + ' best_tour: ' + str(best_found_tour.order) + \
                     ' effective_calcs: ' + str(effective_calculations) + ' elapsed_time: ' + str(elapsed_time)
     file.write(str(datetime.datetime.now()) + ' -- results = ' + result_string + '\n')
     file.close()
@@ -71,15 +71,11 @@ if __name__ == '__main__':
         # write calculated cost matrix to a file and remember file name
         cost_matrix_file_location = arguments.matrix_file_location
 
-    matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",", header=None)
-    matrix_shape = matrix.shape
-    if matrix_shape[0] != matrix_shape[1]:
-        print('Given matrix shape: {} was not square, terminating tspclnt.py!'.format(str(matrix_shape)))
-        sys.exit(1)
-    num_vertices = matrix_shape[0]
+    cost_matrix, num_vertices = tsp.get_cost_matrix_and_vertices_from_file(cost_matrix_file_location)
 
-    # call tsput on matrix
-    tsp.put_cost_matrix_in_tuple_space("tsp_matrix", matrix)
+    # call tsput on matrix if necessary
+    if arguments.store_matrix_tuple_space:
+        tsp.put_cost_matrix_in_tuple_space("tsp_matrix", cost_matrix)
 
     temp_tour, cur_tour = None, None
     node_count = 0
@@ -89,7 +85,11 @@ if __name__ == '__main__':
     local_minimum = float('inf')
     processors = tsp.get_num_processors()
 
-    best_tour = [0 * matrix_shape[0]]
+    tsp.cost_matrix = cost_matrix
+    tsp.TspTour.set_max_vertices(num_vertices)
+
+    # not sure I need this?
+    best_tour = [1 * num_vertices]
     tsp.put_best_tour(best_tour)
     best_tour_found = False
 
@@ -120,20 +120,20 @@ if __name__ == '__main__':
         while not search_tree_list.empty():
             temp_node = search_tree_list.dequeue()
             i += 1
-            node_identifier = "node{}".format(str(i))
-            tsp.put_node(temp_node, node_identifier)
+            node_identifier = "node{}".format(str(i).zfill(5))
+            tsp.put_tour(temp_node, node_identifier)
 
         tuples_sent = i
 
         tuples_processed = 0
         while tuples_processed < tuples_sent:
             finished_name = "ff*"
-            tsp.get_node(finished_name)
+            tsp.get_tour(finished_name)
             tuples_processed += 1
     # else best tour already found above
     else:
-        term_node = tsp.TspNode(-1, -1, -1)
-        tsp.put_node(term_node, "node0")
+        term_node = tsp.TspTour(-1, -1, -1)
+        tsp.put_tour(term_node, "node{}".format(str("").zfill(5)))
 
     end_time = datetime.datetime.now()
     running_time = end_time - start_time

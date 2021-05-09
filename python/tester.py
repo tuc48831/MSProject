@@ -80,11 +80,11 @@ if __name__ == '__main__':
     retrieved_effective_calcs = tsp.get_effective_calcs()
     print("retrieved effective calcs is: {}".format(retrieved_effective_calcs))
 
-    node = tsp.TspNode(10, 1122334455, "1,3,2,4,6,8,5,7,9,10")
+    node = tsp.TspTour(10, 1122334455, "1,3,2,4,6,8,5,7,9,10")
     node_name = tsp.node_prefix + "_001"
     print("node name is: {} and value is: {}".format(node_name, node.to_json()))
-    tsp.put_node(node, node_name)
-    retrieved_node = tsp.get_node(node_name)
+    tsp.put_tour(node, node_name)
+    retrieved_node = tsp.get_tour(node_name)
     print("retrieved node name is: {} and retrieved value is: {}".format(node_name, retrieved_node.to_json()))
 
     sys.exit(0)

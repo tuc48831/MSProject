@@ -14,7 +14,21 @@ effective_calcs_name = "effective_calcs"
 node_prefix = "tsp_node"
 finished_node_prefix = "finished_node"
 
+# global variables
+t_global_minimum = sys.maxsize
+local_minimum = sys.maxsize
 
+cost_matrix = None
+
+
+def calculate_cost_between_nodes(start_node: int, destination_node: int):
+    if not cost_matrix:
+        print("ERROR: tried referencing cost_matrix before it was initialized")
+        sys.exit(1)
+    return cost_matrix[start_node][destination_node]
+
+
+# TODO: investigate replacing this with some builtin python class like a queue?
 class TspSearchTreeList:
     __instance = None
     __search_tree_list = None
@@ -39,7 +53,7 @@ class TspSearchTreeList:
         return self.__node_count
 
     def enqueue(self, tsp_node):
-        if tsp_node is not isinstance(tsp_node, TspNode):
+        if tsp_node is not isinstance(tsp_node, TspTour):
             return False
         if self.empty():
             self.__search_tree_list = tsp_node
@@ -59,14 +73,18 @@ class TspSearchTreeList:
             return temp_node
 
 
-class TspNode:
-    def __init__(self, num_nodes, cost, order, next_node=None):
+class TspTour:
+    max_vertices = None
+
+    def __init__(self, num_nodes, cost, order: [int]):
         # the total number of nodes in the problem
         self.num_nodes = num_nodes
-        # tour is an array of int indicating node order in the tour
+        # in case None or some non-existant order is passed in, make an empty array
+        if order is None or not order:
+            self.order = []
+        else:
+            self.order = order
         self.cost = cost
-        self.order = order
-        self.next_node = next_node
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__)
@@ -74,19 +92,43 @@ class TspNode:
     def is_complete(self, num_vertices):
         return self.num_nodes == num_vertices
 
+    def add_node_to_tour(self, node_to_add: int):
+        self.order.append(node_to_add)
+        self.num_nodes += 1
+        self.cost += calculate_cost_between_nodes(cost_matrix, self.order[-1], node_to_add)
+
+    def tour_contains_node(self, node_to_check):
+        # TODO: potentially add a set object to prevent linear lookup for larger problems?
+        for node_in_tour in self.order:
+            if node_to_check == node_in_tour:
+                return True
+        return False
+
     @staticmethod
     def from_json_string(json_string):
         real_json = json.loads(json_string)
         num_nodes = real_json['num_nodes']
         cost = real_json['cost']
         order = real_json['order']
-        if 'next_node' in real_json:
-            return TspNode(num_nodes, cost, order, real_json['next_node'])
-        else:
-            return TspNode(num_nodes, cost, order)
+        return TspTour(num_nodes, cost, order)
 
+    @staticmethod
+    def set_max_vertices(max_vertices):
+        TspTour.max_vertices = max_vertices
 
-example_node_for_size = TspNode(sys.maxsize, sys.maxsize, sys.maxsize, None)
+    @staticmethod
+    def get_max_vertices():
+        if not TspTour.max_vertices:
+            print("ERROR: tried to determine node info without setting max vertices")
+            sys.exit(1)
+        return TspTour.max_vertices
+
+    @staticmethod
+    def get_max_tour_size():
+        if not TspTour.max_vertices:
+            print("ERROR: tried to determine node info without setting max vertices")
+            sys.exit(1)
+        return sys.getsizeof(TspTour(TspTour.max_vertices, sys.maxsize, [0]*TspTour.max_vertices))
 
 
 def get_num_processors():
@@ -119,6 +161,16 @@ def get_cost_matrix_from_tuple_space(matrix_name, num_vertices):
     size = len(dataframe_for_size.to_json())
     retrieved_matrix, retrieved_tuple_name = tslib.tsget(matrix_name, size)
     return pandas.read_json(retrieved_matrix)
+
+
+def get_cost_matrix_and_vertices_from_file(cost_matrix_file_location):
+    read_cost_matrix = pandas.read_csv(cost_matrix_file_location, delimiter=",", header=None)
+    matrix_shape = cost_matrix.shape
+    if matrix_shape[0] != matrix_shape[1]:
+        print('Given matrix shape: {} was not square, terminating tspclnt.py!'.format(str(matrix_shape)))
+        sys.exit(1)
+    num_vertices = matrix_shape[0]
+    return read_cost_matrix, num_vertices
 
 
 def put_start(num_dimensions):
@@ -206,53 +258,40 @@ def get_effective_calcs():
     return int(retrieved_effective_calcs)
 
 
-def put_node(node, node_identifier):
-    node_as_json = node.to_json()
-    node_as_json_size = len(node_as_json)
+def put_tour(tour, tour_identifier):
+    tour_as_json = tour.to_json()
+    tour_as_json_size = len(tour_as_json)
     # store the size of the tuple in its
-    node_size_identifier = "size_" + node_identifier
-    return_value = tslib.tsput(node_size_identifier, str(node_as_json_size), sys.getsizeof(str(int())))
+    tour_size_identifier = "size_" + tour_identifier
+    return_value = tslib.tsput(tour_size_identifier, str(tour_as_json_size), sys.getsizeof(str(int())))
     if return_value == 1:
         return 1
-    return_value = tslib.tsput(node_identifier, node_as_json, node_as_json_size)
+    return_value = tslib.tsput(tour_identifier, tour_as_json, tour_as_json_size)
     if return_value == 1:
         return 1
     else:
         return 0
 
 
-def read_node(node_identifier):
+def read_tour(tour_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
-    node_size_identifier = "size_" + node_identifier
-    retrieved_node_size = read_node_size(node_size_identifier)
-    print("retrieved node size is: {}".format(retrieved_node_size))
-    retrieved_node_as_json, retrieved_node_identifier = tslib.tsread(node_identifier, retrieved_node_size)
-    print("retrieved node as json is: {}".format(retrieved_node_as_json))
-    node = TspNode.from_json_string(retrieved_node_as_json)
+    tour_size = TspTour.get_max_tour_size
+    retrieved_tour_as_json, retrieved_tour_identifier = tslib.tsread(tour_identifier, tour_size)
+    print("retrieved node as json is: {}".format(retrieved_tour_as_json))
+    node = TspTour.from_json_string(retrieved_tour_as_json)
     return node
 
 
-def get_node(node_identifier):
+def get_tour(tour_identifier):
     # of note, this does not currently support regex getting of nodes, only direct naming
-    node_size_identifier = "size_" + node_identifier
-    retrieved_node_size = get_node_size(node_size_identifier)
-    print("retrieved node size is: {}".format(retrieved_node_size))
-    retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(node_identifier, retrieved_node_size)
+    tour_size = TspTour.get_max_tour_size
+    retrieved_node_as_json, retrieved_node_identifier = tslib.tsget(tour_identifier, tour_size)
     print("retrieved node as json is: {}".format(retrieved_node_as_json))
-    node = TspNode.from_json_string(retrieved_node_as_json)
+    node = TspTour.from_json_string(retrieved_node_as_json)
     return node
 
 
-def read_node_size(node_size_identifier):
-    retrieved_node_size, retrieved_node_size_identifier = tslib.tsread(node_size_identifier, sys.getsizeof(str(int())))
-    return int(retrieved_node_size)
-
-
-def get_node_size(node_size_identifier):
-    retrieved_node_size, retrieved_node_size_identifier = tslib.tsget(node_size_identifier, sys.getsizeof(str(int())))
-    return int(retrieved_node_size)
-
-
+# not 100% sure i need functions specifically for finished nodes or not?
 def put_finished_node(finished_node, node_identifier):
     return
 
@@ -265,10 +304,16 @@ def get_finished_node(node_identifier):
     return
 
 
-def make_child():
-    child = None
+def add_node_to_tour(base_tour: TspTour, node_num: int, ):
+    """
+    returns either None, or a tsp tour if the branch being investigated is 'good'
+    """
+    found = False
+
+
+
+
 
     if False:
         return None
     return child
-
